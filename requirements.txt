@@ -1,0 +1,5 @@
+fleep==1.0.1
+tqdm==4.31.1
+termcolor==1.1.0
+scapy==2.4.3
+hexdump==3.3
