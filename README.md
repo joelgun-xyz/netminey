@@ -1,6 +1,7 @@
 # netminey
 
 A Lightweight PCAP assessment tool based on python3 and the scapy library. 
+Feel free to tweak / modify the code. 
 
 ## Getting Started
 
