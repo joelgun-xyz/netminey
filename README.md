@@ -1,5 +1,6 @@
 # netminey
-A lightweight PCAP assessment tool. 
+
+A Lightweight PCAP assessment tool based on python3 and the scapy library. 
 
 ## Getting Started
 
@@ -13,11 +14,9 @@ git clone https://github.com/joelgun-xyz/netminey.git
 
 This tool runs on Python3. 
 
-
 ### Installing
 
 You need to install a couple of libs from the requirements.txt
-
 
 ```
 fleep==1.0.1
@@ -34,8 +33,6 @@ pip3 install -r requirements.txt
 ```
 
 ## Usage
-
-
 
 ```
 netminey.py
@@ -69,7 +66,7 @@ You can pre filter the PCAP while loading it into memory with the BPF filter syn
 python3 netminey.py --filter "host 10.10.10.209" [flags you want to parse for; i.e. --http] [inputfile; -in test.pcap]
 ```
 
-Output starts with:
+Output:
 
 ```
  [ xxx ] Load PCAP and filter the packets.....
@@ -85,7 +82,7 @@ reading from file 2018-04-11-traffic-analysis-exercise.pcap, link-type EN10MB (E
 python3 netminey.py --http -in 2018-04-11-traffic-analysis-exercise.pcap
 ```
 
-Output starts with:
+Output:
 
 ```
 [ xxx ] Load PCAP.....
@@ -96,9 +93,6 @@ Output starts with:
 
 
  [ xxx ] Parsing HTTP connections.....
-
-
-
 
 :::: Communication: 10.8.20.101 <--> 63.239.233.90 :::: 
  >> Request:  
@@ -130,7 +124,7 @@ Output starts with:
 python3 netminey.py --dns -in dnstxt.pcap 
 ```
 
-Output starts with:
+Output:
 
 ```
 [ xxx ] Load PCAP.....
@@ -138,7 +132,6 @@ Output starts with:
 
 
 1337: 100%|#################################################################################################################################################| 100/100 [00:01<00:00, 83.01it/s]
-
 
  [ xxx ] Parsing DNS queries.....
 
@@ -157,8 +150,8 @@ The script also parses queried TXT records:
 
  Source: 192.168.43.10
     DNS Server: 9.9.9.9
-    Resource Name: raiffeisen.ch
-    TXT Record: [b'Jkk4n4RCBb9lxjJyMpQr+9i4ZHkCf+YpnYwdfZzHGy4EeDSIpoH4H27Js6X5aBomv9ZZQJfI6jp9/dLRRzzqJw==']
+    Resource Name: evildomain.tk
+    TXT Record: [b'dGhpc2lzYWMyY29tbWFuZGZyb21hbmV2aWxoYWNrZXI=']
 
 .....
 ```
@@ -172,7 +165,6 @@ python3 netminey.py -ep -in dnstxt.pcap
 Output: 
 
 ```
-
  [ xxx ] Load PCAP.....
  [ >> ] 2019-08-20-traffic-analysis-exercise.pcap loaded
 
@@ -183,8 +175,8 @@ Output:
  [ xxx ] Creating folders for the extracted payloads.....
 
 
-`**`The current working directory is: /Users/joelgun/Scripts/netminey`**`
-`**`Successfully created the directory: 2019-08-20-traffic-analysis-exercise.pcap_parsed_output`**`
+The current working directory is: /Users/joelgun/Scripts/netminey
+Successfully created the directory: 2019-08-20-traffic-analysis-exercise.pcap_parsed_output
 
 
  [ xxx ] Parsing HTTP connections and extracting payloads.....
@@ -208,7 +200,7 @@ Output:
             Accept_Ranges : bytes
             Connection : keep-alive
             Content_Length : 845312
-            `**`Content_Type : image/png`**`
+            Content_Type : image/png
             Date : Tue, 20 Aug 2019 19:53:42 GMT
             ETag : "5d5c1cc2-ce600"
             Last_Modified : Tue, 20 Aug 2019 16:16:02 GMT
@@ -219,11 +211,11 @@ Output:
 
 
    >> Attachment Information:  
-         Attachment: `**`samerton.png`**`
+         Attachment: samerton.png
          MD5: 7c96f51b36d5d2b747531713bc4c4b3d
          SHA1: 9b6e9c84e918dad5e2799912a6f971be01eb6f25
 
-`**`
+
 0000  4D 5A 90 00 03 00 00 00 04 00 00 00 FF FF 00 00  MZ..............
 0010  B8 00 00 00 00 00 00 00 40 00 00 00 00 00 00 00  ........@.......
 0020  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
@@ -232,14 +224,13 @@ Output:
 0050  69 73 20 70 72 6F 67 72 61 6D 20 63 61 6E 6E 6F  is program canno
 0060  74 20 62 65 20 72 75 6E 20 69 6E 20 44 4F 53 20  t be run in DOS 
 0070  6D 6F 64 65 2E 0D 0D 0A 24 00 00 00 00 00 00 00  mode....$.......
-`**`
-`**`
+
         Possible type:       ['executable', 'system'] 
         Possible extension:  ['exe', 'dll', 'drv', 'sys', 'com'] 
         Possible mime type:  ['application/vnd.microsoft.portable-executable', 'application/x-msdownload'] 
-`**`
 
-`**`File saved:  ./2019-08-20-traffic-analysis-exercise.pcap_parsed_output/185.183.98.232-to-10.8.20.101/samerton.png-9b6e9c84e918dad5e2799912a6f971be01eb6f25.exe`**`
+
+File saved:  ./2019-08-20-traffic-analysis-exercise.pcap_parsed_output/185.183.98.232-to-10.8.20.101/samerton.png-9b6e9c84e918dad5e2799912a6f971be01eb6f25.exe
 ******
 ```
 
@@ -251,11 +242,9 @@ Flag: -co overview
 
 ```
 python3 netminey.py -co overview -in susp_ports.pcap 
-
 ```
 
 ```
-
  [ xxx ] Load PCAP.....
  [ >> ] susp_ports.pcap loaded
 
@@ -322,7 +311,7 @@ To reduce the size of the PCAP, try out [TRIM]( https://www.netresec.com/?page=B
 
 ## Authors
 
-* **@joelgun** - *Initial work* - [Twitter](https://twitter.com/joelgun)
+* **@joelgun**  - [Twitter](https://twitter.com/joelgun)
 
 ## License
 
