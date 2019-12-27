@@ -278,8 +278,8 @@ Flag: -co all
 
 ```
 python3 netminey.py -co all -in susp_ports.pcap
-
 ```
+
 ```
 [ xxx ] Load PCAP.....
  [ >> ] susp_ports.pcap loaded
