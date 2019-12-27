@@ -304,6 +304,13 @@ python3 netminey.py -co all -in susp_ports.pcap
  .....
 ```
 
+### Testing
+
+In the folder test are test pcaps to play around, if you need more go to: [Malware Traffic Analysis](https://www.malware-traffic-analysis.net/training-exercises.html)
+there are some great exercices. 
+There is also a test output folder from the parsing function from the 2019-08-20-traffic-analysis-exercise.pcap.
+
+
 ### Important note
 
 Be careful if you want to analyse huge PCAP's, it's loaded into your memory. 
