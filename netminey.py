@@ -2,8 +2,6 @@
 # encoding: utf-8
 
 
-"""Minimal python commad line."""
-
 import sys
 import argparse
 import logging
@@ -43,15 +41,11 @@ logo_string = """
         @joelgun - v1.0
     """
 
-module = sys.modules['__main__'].__file__
-log = logging.getLogger(module)
 
 conf.contribs["http"]["auto_compression"] = True
 
 load_layer("http")
 
-
-# rdpcap comes from scapy and loads in our pcap file
 def load_pcap(inputfile):
     print('\n') 
     print(f" [ xxx ] Load PCAP.....")
@@ -253,24 +247,24 @@ def show_ports(packets,mode):
                 elif packet[IP].proto == 17:
                     protocol = "UDP"
                 else:
-                    protocol = "Protocolnumber: "+packet[IP].proto+" idk, google it. "  
-                print(f" {protocol} >> {datetime.fromtimestamp(packet.time).strftime('%A, %B  %d, %Y %I:%M:%S')} {packet[IP].src}:{packet.sport}        == to ==> {packet[IP].dst}:{packet.dport}")    
+                    protocol = "Protocolnumber: "+str(packet[IP].proto)+" idk, google it. "  
+                print(f" {protocol} >> {datetime.fromtimestamp(packet.time).strftime(' %B  %d, %Y')} {packet[IP].src}:{packet.sport}        == to ==> {packet[IP].dst}:{packet.dport}")    
     
     elif mode == 'overview':
         connection_table = dict()
         counter = 1
         for packet in packets:
             
-            if UDP in packet or TCP in packet:
+            if UDP in packet or TCP in packet :
                 if packet[IP].proto == 6:
                     protocol = "TCP"
                 elif packet[IP].proto == 17:
                     protocol = "UDP"
                 else:
-                    protocol = "Number: "+packet[IP].proto+" idk, google it. " 
+                    protocol = "Protocolnumber: "+str(packet[IP].proto)+" idk, google it. "  
 
-                current_package_time = datetime.fromtimestamp(packet.time).strftime('%A, %B  %d, %Y %I:%M:%S')
-                current_conn = current_package_time+";"+packet[IP].src+":"+str(packet.sport)+";"+packet[IP].dst+":"+str(packet.dport)
+                current_package_time = datetime.fromtimestamp(packet.time).strftime(' %B  %d, %Y')
+                current_conn = protocol+";"+current_package_time+";"+packet[IP].src+":"+str(packet.sport)+";"+packet[IP].dst+":"+str(packet.dport)
 
                 if current_conn in connection_table:
                     connection_table[current_conn] += counter
@@ -280,7 +274,7 @@ def show_ports(packets,mode):
         print(f" >> Overview connection: ")
         for k,v in connection_table.items():
             conns = k.split(";")
-            print(f" {protocol} >> {conns[0]} -- from: {conns[1] }   == to ==> {conns[2]} : amount: {v}")
+            print(f" {conns[0]} >> {conns[1]} -- from: {conns[2] }   == to ==> {conns[3]} : amount: {v}")
     
     else:
         pass
@@ -413,9 +407,3 @@ def main():
 if __name__ == "__main__":
     show_logo()
     main()
-
-
-
-
-
- 
