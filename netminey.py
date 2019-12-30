@@ -40,7 +40,8 @@ logo_string = """
                                     ### 
         @joelgun - v1.0
     """
-
+module = sys.modules['__main__'].__file__
+log = logging.getLogger(module)
 
 conf.contribs["http"]["auto_compression"] = True
 
