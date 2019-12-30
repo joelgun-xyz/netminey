@@ -305,6 +305,13 @@ python3 netminey.py -co all -in susp_ports.pcap
  .....
 ```
 
+#### Shows connection overview, parses for DNS, HTTP connections and extract payloads
+
+```
+python3 netminey.py --all -in dnstxt.pcap 
+```
+
+
 ### Testing
 
 In the folder test are test pcaps to play around, if you need more go to: [Malware Traffic Analysis](https://www.malware-traffic-analysis.net/training-exercises.html)
@@ -323,7 +330,7 @@ To reduce the size of the PCAP, try out [TRIM]( https://www.netresec.com/?page=B
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
