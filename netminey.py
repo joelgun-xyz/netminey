@@ -88,6 +88,24 @@ def packets_summary(packets, inputfile):
     print(f" Inputfile: {inputfile}")
     print(f" Summary: {packets}")
 
+
+def scan_covert(packets, mode):
+    print('\n') 
+    print(f" [ xxx ] Parsing for possible {mode.upper()} covert communication.....")
+    time.sleep(1)
+    if mode == "icmp":
+        for packet in packets:
+            if packet.haslayer("ICMP") and packet.haslayer('Raw'):
+                payload = packet.getlayer('Raw').load
+                print('\n')
+                print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                print(f"    Type: {packet[ICMP].type} ")
+                print(f"    Code: {packet[ICMP].code} ")
+                try:
+                    print(f"    Payload - utf-8 decoded: {payload.decode('utf-8')}")
+                except:
+                    print(f"    Payload bytes: {payload}")
+
 def show_http(packets):
     print('\n') 
     print(f" [ xxx ] Parsing HTTP connections.....")
@@ -214,8 +232,7 @@ def show_http_extract_payload(packets, parsed_output_dir):
                         print(f"        Possible extension:  {fleep_info.extension} ")  # prints ['png']
                         print(f"        Possible mime type:  {fleep_info.mime} ")  # prints ['image/png']
 
-                    f.close()
-                  
+                    f.close()   
                    
                 if len(fleep_info.extension):
                     os.rename(extracted_file_path+"/temp_file", extracted_file_path+"/"+filename+"-"+hashvalue+"."+str(fleep_info.extension[0]))
@@ -344,7 +361,7 @@ def main():
     formatter_class = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(description=module,
                                      formatter_class=formatter_class)
-   
+
     parser.add_argument("-http", "--http", action='store_true',
                         help="Parses PCAP for HTTP connections .")
     parser.add_argument("-ep", "--extract", action='store_true',
@@ -355,6 +372,8 @@ def main():
                         help="Parses PCAP for DNS data from pcap") 
     parser.add_argument("-co", "--conns", type=str, choices=['overview', 'all'],
                         help="Prints all communication incl. ports, choose between overview or all. ") 
+    parser.add_argument("-cv", "--covertscan", type=str, choices=['icmp'],
+                        help="Scans vor possible covert channel in ICMP packets. ") 
     parser.add_argument("-s", "--summary", action='store_true',
                         help="Summary over all connections from pcap.")   
     parser.add_argument("-ft", "--filter", nargs="+",
@@ -364,6 +383,8 @@ def main():
     parser.add_argument("-in", "--inputfile", required=True, metavar="inputfile", help="PCAP file you want to analyze.")
   
     args = parser.parse_args()
+
+
 
     if args.filter: 
         packets = load_filtered_pcap(args.inputfile,args.filter)
@@ -395,6 +416,9 @@ def main():
         parsed_output_dir = create_folders(args.inputfile)
         show_http_extract_payload(packets,parsed_output_dir)
 
+    elif args.covertscan:
+        progressbar_unique()
+        scan_covert(packets, args.covertscan)
     elif args.conns:
         progressbar_unique()
         show_ports(packets, args.conns)
