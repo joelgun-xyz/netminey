@@ -90,6 +90,8 @@ def packets_summary(packets, inputfile):
 
 
 def scan_covert(packets, mode):
+    windows_standard_ping = "6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869" 
+    osx_standard_ping = "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637"
     print('\n') 
     print(f" [ xxx ] Parsing for possible {mode.upper()} covert communication.....")
     time.sleep(1)
@@ -97,15 +99,19 @@ def scan_covert(packets, mode):
         for packet in packets:
             if packet.haslayer("ICMP") and packet.haslayer('Raw'):
                 payload = packet.getlayer('Raw').load
-                print('\n')
-                print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
-                print(f"    Type: {packet[ICMP].type} ")
-                print(f"    Code: {packet[ICMP].code} ")
-                try:
-                    print(f"    Payload - utf-8 decoded: {payload.decode('utf-8')}")
-                except:
-                    print(f"    Payload bytes: {payload}")
-
+                if payload.hex() == windows_standard_ping or osx_standard_ping in payload.hex():
+                    print(f"[ xxx ] Standard ping! \n")
+                else:
+                    print('\n')
+                    print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                    print(f"    Type: {packet[ICMP].type} ")
+                    print(f"    Code: {packet[ICMP].code} ")
+                    print(f"    ID: {packet[ICMP].id} ")
+                    try:
+                        print(f"    Payload (UTF-8): {payload.decode('utf-8')}")
+                    except:
+                        print(f"    Payload bytes: {payload}")
+                    
 def show_http(packets):
     print('\n') 
     print(f" [ xxx ] Parsing HTTP connections.....")
