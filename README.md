@@ -49,6 +49,8 @@ optional arguments:
   -co {overview,all}, --conns {overview,all}
                         Prints all communication incl. ports, choose between
                         overview or all.
+  -cv {icmp}, --covertscan {icmp}
+                        Scans for possible covert channel in ICMP packets.
   -s, --summary         Summary over all connections from pcap.
   -ft FILTER [FILTER ...], --filter FILTER [FILTER ...]
                         Pre filter the pcap while loading it in memory. i.e.
@@ -303,6 +305,47 @@ python3 netminey.py -co all -in susp_ports.pcap
  TCP >> Thursday, December  12, 2019 07:17:59 192.168.43.10:49238        == to ==> 35.186.224.53:443
 
  .....
+```
+
+
+#### Parses for possible covert communication in ICMP data field
+
+```
+python3 netminey.py -cv icmp -in icmpcoverttest.pcap 
+```
+
+Tries to identify possible covert communication in ICMP data fields. 
+It compares payload with standard ping payloads as hexstreams:
+
+```
+Windows - 6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869
+OSX - {there is a variable part here}08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637
+```
+When payload and standard ping hexstreams matches, it prints: [ xxx ] Standard ping!
+if not, it prints the packet. 
+
+Output: 
+
+```
+[ xxx ] Load PCAP.....
+ [ >> ] testicmpcovert.pcap loaded
+
+
+1337: 100%|###############################################################################################| 100/100 [00:01<00:00, 88.05it/s]
+
+
+ [ xxx ] Parsing for possible ICMP covert communication.....
+
+
+:::: Communication: 127.0.0.1 <--> 127.0.0.1 :::: 
+    Type: 8 
+    Code: 0 
+    ID: 0 
+    Payload (UTF-8): AAAAAAAAAAAAAAAAAAAAAAAAA
+
+....
+
+[ xxx ] Standard ping! 
 ```
 
 #### Shows connection overview, parses for DNS, HTTP connections and extract payloads

@@ -379,7 +379,7 @@ def main():
     parser.add_argument("-co", "--conns", type=str, choices=['overview', 'all'],
                         help="Prints all communication incl. ports, choose between overview or all. ") 
     parser.add_argument("-cv", "--covertscan", type=str, choices=['icmp'],
-                        help="Scans vor possible covert channel in ICMP packets. ") 
+                        help="Scans for possible covert channel in ICMP packets. ") 
     parser.add_argument("-s", "--summary", action='store_true',
                         help="Summary over all connections from pcap.")   
     parser.add_argument("-ft", "--filter", nargs="+",
@@ -419,6 +419,7 @@ def main():
         packets_summary(packets, args.inputfile)
         show_dns(packets)
         show_ports(packets,"overview")
+        scan_covert(packets, args.covertscan)
         parsed_output_dir = create_folders(args.inputfile)
         show_http_extract_payload(packets,parsed_output_dir)
 
