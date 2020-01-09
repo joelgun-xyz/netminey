@@ -327,7 +327,7 @@ It compares payload with standard ping payloads as hexstreams:
 Windows - 6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869
 OSX - {there is a variable part here}08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637
 ```
-When payload and standard ping hexstreams matches, it prints: [ xxx ] Standard ping!
+When the payload and the standard ping hexstreams matches, it prints: [ xxx ] Standard ping!
 if not, it prints the packet. 
 
 Output: 
