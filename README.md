@@ -36,6 +36,10 @@ pip3 install -r requirements.txt
 ## Usage
 
 ```
+usage: netminey.py [-h] [-http] [-ep] [-all] [-d] [-co {overview,all}]
+                   [-cv {icmp,tcp}] [-f [FIND]] [-su]
+                   [-ft FILTER [FILTER ...]] [--version] -in inputfile
+
 netminey.py
 
 optional arguments:
@@ -51,7 +55,9 @@ optional arguments:
                         overview or all.
   -cv {icmp}, --covertscan {icmp}
                         Scans for possible covert channel in ICMP packets.
-  -s, --summary         Summary over all connections from pcap.
+  -f [FIND], --find [FIND]
+                        Scans for credentials in default or custom text.
+  -su, --summary        Summary over all connections from pcap.
   -ft FILTER [FILTER ...], --filter FILTER [FILTER ...]
                         Pre filter the pcap while loading it in memory. i.e.
                         --filter "host 10.1.1.1". BPF syntax
@@ -197,7 +203,7 @@ Successfully created the directory: 2019-08-20-traffic-analysis-exercise.pcap_pa
             Method : GET
             Path : /samerton.png
             Http_Version : HTTP/1.1
-   >> Response: 
+   << Response: 
         Source: 185.183.98.232
         Destination: 10.8.20.101
             Accept_Ranges : bytes
@@ -354,6 +360,34 @@ Output:
 python3 netminey.py --all -in dnstxt.pcap 
 ```
 
+
+#### Searches for strings in RAW payloady in PCAP
+
+You can either specify a string to search for:
+
+```
+python3 netminey.py -f AAAA -in testicmpcovert.pcap
+```
+
+the default search looks for the strings: "user" and "pass"
+
+```
+python3 netminey.py -f -in testicmpcovert.pcap
+```
+
+```
+
+ [ xxx ] Load PCAP.....
+ [ >> ] testicmpcovert.pcap loaded
+
+
+1337: 100%|#######################################################################################################################| 100/100 [00:01<00:00, 84.58it/s]
+
+
+:::: Communication: 127.0.0.1 <--> 127.0.0.1 :::: 
+    Payload (UTF-8): AAAAAAAAAAAAAAAAAAAAAAAAA
+
+```
 
 ### Testing
 

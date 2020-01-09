@@ -81,6 +81,40 @@ def load_netflow_data(inputfile):
         print(f" File: {inputfile} couldn't be loaded! ")   
     return packets
 """
+def cred_search(packets, keyword):
+
+    if keyword != "noargument":
+        for packet in packets:
+            if packet.haslayer('Raw'):
+                payload = packet.getlayer('Raw').load
+                try: 
+                    if keyword in payload.decode('utf-8'):
+                        print('\n')
+                        print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                
+                        try:
+                            print(f"    Payload (UTF-8): {payload.decode('utf-8')}")
+                        except:
+                            print(f"    Payload bytes: {payload}")
+                except:
+                    continue
+    else:
+        for packet in packets:
+            if packet.haslayer('Raw'):
+                payload = packet.getlayer('Raw').load
+                try: 
+                    if 'user' in payload.decode('utf-8') or 'pass' in payload.decode('utf-8'):
+                        
+                        print('\n')
+                        print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                
+                        try:
+                            print(f"    Payload (UTF-8): {payload.decode('utf-8')}")
+                        except:
+                            print(f"    Payload bytes: {payload}")
+                except:
+                    continue
+
 def packets_summary(packets, inputfile):
     print('\n') 
     print(f" [ xxx ] Parsing PCAP.....")
@@ -94,13 +128,15 @@ def scan_covert(packets, mode):
     osx_standard_ping = "08090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f3031323334353637"
     print('\n') 
     print(f" [ xxx ] Parsing for possible {mode.upper()} covert communication.....")
+    print('\n')
     time.sleep(1)
     if mode == "icmp":
         for packet in packets:
             if packet.haslayer("ICMP") and packet.haslayer('Raw'):
                 payload = packet.getlayer('Raw').load
                 if payload.hex() == windows_standard_ping or osx_standard_ping in payload.hex():
-                    print(f"[ xxx ] Standard ping! \n")
+                    print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                    print(f"    [ P ] Standard ping! \n")
                 else:
                     print('\n')
                     print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
@@ -111,7 +147,24 @@ def scan_covert(packets, mode):
                         print(f"    Payload (UTF-8): {payload.decode('utf-8')}")
                     except:
                         print(f"    Payload bytes: {payload}")
-                    
+    elif mode == "tcp":
+         for packet in packets:
+            if packet.haslayer("TCP"):
+                packet.show()
+                """
+                print('\n')
+                print(f":::: Communication: {packet[IP].src} <--> {packet[IP].dst} :::: ")
+                print(f"    Type: {packet[TCP].type} ")
+                print(f"    Code: {packet[ICMP].code} ")
+                print(f"    ID: {packet[ICMP].id} ")
+                try:
+                    print(f"    Payload (UTF-8): {payload.decode('utf-8')}")
+                except:
+                    print(f"    Payload bytes: {payload}")
+                """
+    else:
+        print(f"No mode chosen. ")
+
 def show_http(packets):
     print('\n') 
     print(f" [ xxx ] Parsing HTTP connections.....")
@@ -196,7 +249,7 @@ def show_http_extract_payload(packets, parsed_output_dir):
         load_layer("http")
         if packet.haslayer("HTTPResponse"):
             http_resp= packet.getlayer('HTTPResponse').fields
-            print("   >> Response: ")
+            print("   << Response: ")
 
             print(f"        Source: {packet[IP].src}")
             print(f"        Destination: {packet[IP].dst}")
@@ -378,9 +431,11 @@ def main():
                         help="Parses PCAP for DNS data from pcap") 
     parser.add_argument("-co", "--conns", type=str, choices=['overview', 'all'],
                         help="Prints all communication incl. ports, choose between overview or all. ") 
-    parser.add_argument("-cv", "--covertscan", type=str, choices=['icmp'],
-                        help="Scans for possible covert channel in ICMP packets. ") 
-    parser.add_argument("-s", "--summary", action='store_true',
+    parser.add_argument("-cv", "--covertscan", type=str, choices=['icmp', 'tcp'],
+                        help="Scans for possible covert channel in ICMP packets. ")
+    parser.add_argument("-f", "--find", nargs='?', const="noargument", type=str,
+                        help="Scans for credentials in default or custom text.")  
+    parser.add_argument("-su", "--summary", action='store_true',
                         help="Summary over all connections from pcap.")   
     parser.add_argument("-ft", "--filter", nargs="+",
                         help='Pre filter the pcap while loading it in memory. i.e. --filter "host 10.1.1.1". BPF syntax  https://biot.com/capstats/bpf.html' )                            
@@ -389,7 +444,6 @@ def main():
     parser.add_argument("-in", "--inputfile", required=True, metavar="inputfile", help="PCAP file you want to analyze.")
   
     args = parser.parse_args()
-
 
 
     if args.filter: 
@@ -422,6 +476,10 @@ def main():
         scan_covert(packets, args.covertscan)
         parsed_output_dir = create_folders(args.inputfile)
         show_http_extract_payload(packets,parsed_output_dir)
+
+    elif args.find:
+        progressbar_unique()
+        cred_search(packets, args.find)
 
     elif args.covertscan:
         progressbar_unique()
