@@ -361,7 +361,7 @@ python3 netminey.py --all -in dnstxt.pcap
 ```
 
 
-#### Searches for strings in RAW payloady in PCAP
+#### Searches for strings in RAW payload in PCAP
 
 You can either specify a string to search for:
 
